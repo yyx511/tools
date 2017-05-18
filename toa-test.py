@@ -19,7 +19,7 @@ from impacket import ImpactDecoder, ImpactPacket
 
 SRC_HOST = '192.168.40.4'
 SRC_PORT = 50001
-DST_HOST = '13.1.1.1'
+DST_HOST = '13.1.1.4'
 DST_PORT = 80
 
 #IP
@@ -355,6 +355,7 @@ opt.set_len(4)
 opt.set_word(2, 102)
 tcp.add_option(opt)
 '''
+
 '''
 #ACK+PSH用例7
 #(n=1397) + 20 + 20 + 39 + 1 + 10 + 13 = 1500
@@ -388,14 +389,50 @@ tcp.add_option(opt)
 '''
 
 #ACK+PSH用例8
-#(n=1425) + 20 + 20 + 39 + 1 + 10 + 13 = 1500
+#(n=1425) + 20 + 20 + 32 + 4 + 10 + 13 = 1500
+n=1401
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_MAXSEG, 1460) #4
+tcp.add_option(opt)
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_WINDOW, 8) #3
+tcp.add_option(opt)
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_WINDOW, 8) #3
+tcp.add_option(opt)
+
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_MAXSEG, 1460) #4
+tcp.add_option(opt)
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_WINDOW, 8) #3
+tcp.add_option(opt)
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_WINDOW, 8) #3
+tcp.add_option(opt)
+
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_MAXSEG, 1460) #4
+tcp.add_option(opt)
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_WINDOW, 8) #3
+tcp.add_option(opt)
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_WINDOW, 8) #3
+tcp.add_option(opt)
+
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_SACK_PERMITTED) #2
+tcp.add_option(opt)
+
+opt = ImpactPacket.TCPOption(100) #自定义选项,长度4
+opt.set_len(4)
+opt.set_word(2, 100)
+tcp.add_option(opt)
+
+'''
+#ACK+PSH用例8
+#(n=1525) + 20 + 20 + 12 + 10 + 13 = 1500
 n=1425
 opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_MAXSEG, 1460) #4
 tcp.add_option(opt)
 opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_WINDOW, 8) #3
 tcp.add_option(opt)
+opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_WINDOW, 8) #3
+tcp.add_option(opt)
 opt = ImpactPacket.TCPOption(ImpactPacket.TCPOption.TCPOPT_SACK_PERMITTED) #2
 tcp.add_option(opt)
+'''
 
 msg = "GET/?ucid=%s HTTP/1.1\r\n\r\n" % ('a' * n)
 tcp.contains(ImpactPacket.Data(msg))
